@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 
-const API_URL = 'https://teslainvestgroup.com:6044/api/v1/users/register';
+const API_URL = 'https://teslainvestgroup.com:6044/api/v1/users/register/';
 
 interface RegisterRequest {
   email: string;

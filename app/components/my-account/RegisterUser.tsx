@@ -1,27 +1,22 @@
 'use client';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 
-import TextField from '@mui/material/TextField';
 import { Button } from '@mui/material';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 import { Modal } from '../UI/Modal';
-import { registerUser } from '@/app/menu/my-account/requests';
-import { useQueryClient } from '@tanstack/react-query';
+import { getUrlForRegister } from './requests';
+import CopyToClipboard from 'react-copy-to-clipboard';
+import { FaCopy } from 'react-icons/fa';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [nickname, setNickname] = useState('');
-
   const [loading, setLoading] = useState<boolean>(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [error, setError] = useState<boolean | string | undefined>(false);
-  const router = useRouter();
   const [alignment, setAlignment] = useState<string>('Buyer');
-  const queryClient = useQueryClient();
+  const [id, setId] = useState('');
+  const [copied, setCopied] = useState(false);
 
   const handleAlignment = (
     event: React.MouseEvent<HTMLElement>,
@@ -35,24 +30,17 @@ export default function LoginPage() {
   const handleRegister = async () => {
     try {
       setLoading(true);
-      const user = {
-        email: email,
-        password: password,
-        nickname: nickname,
-        role: alignment,
-      };
-      const response = await registerUser(user);
+
+      const response = await getUrlForRegister(alignment);
       if (!response) {
         setError('Something went wrong');
       } else {
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        router.push('/menu/my-account/users', { scroll: false });
-        queryClient.invalidateQueries({ queryKey: ['users'] });
+        setId(response);
       }
       setLoading(false);
     } catch {
       setLoading(false);
-      setError('Wrong login or password');
+      setError('Something went wrong');
     }
   };
 
@@ -73,80 +61,27 @@ export default function LoginPage() {
             TEAM LEAD
           </ToggleButton>
         </ToggleButtonGroup>
+        {id && (
+          <CopyToClipboard
+            text={`http://localhost:3000/login/register?id=${id}`}
+          >
+            <div
+              className="border-2 rounded-md flex max-w-[320px] p-2 cursor-pointer items-center gap-2 hover:text-purple-600"
+              onClick={() => {
+                setCopied(true);
+                setTimeout(() => {
+                  setCopied(false);
+                }, 1000);
+              }}
+            >
+              <p className="w-[90%] overflow-hidden text-ellipsis whitespace-nowrap">
+                http://localhost:3000/login/register?id={id}
+              </p>
+              <div className="">{copied ? 'Copied' : <FaCopy />}</div>
+            </div>
+          </CopyToClipboard>
+        )}
 
-        <TextField
-          id="login-input"
-          color="secondary"
-          label="Nickname"
-          variant="outlined"
-          sx={{
-            width: '100%',
-            paddingTop: '4px',
-            '& .MuiInputBase-input': {
-              color: 'white',
-            },
-            '& .MuiInputLabel-root': {
-              color: 'gray',
-            },
-            '&:-webkit-autofill': {
-              WebkitBoxShadow: '0 0 0 100px #fff inset',
-              WebkitTextFillColor: 'black',
-            },
-          }}
-          value={nickname}
-          onChange={(e) => {
-            setNickname(e.target.value);
-            setError('');
-          }}
-        />
-        <TextField
-          id="login-input"
-          color="secondary"
-          label="Login"
-          variant="outlined"
-          sx={{
-            width: '100%',
-            paddingTop: '4px',
-            '& .MuiInputBase-input': {
-              color: 'white',
-            },
-            '& .MuiInputLabel-root': {
-              color: 'gray',
-            },
-            '&:-webkit-autofill': {
-              WebkitBoxShadow: '0 0 0 100px #fff inset',
-              WebkitTextFillColor: 'black',
-            },
-          }}
-          value={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-            setError('');
-          }}
-        />
-
-        <TextField
-          id="password-input"
-          label="Password"
-          type="text"
-          color="secondary"
-          variant="outlined"
-          sx={{
-            width: '100%',
-            marginTop: '10px',
-            '& .MuiInputBase-input': {
-              color: 'white',
-            },
-            '& .MuiInputLabel-root': {
-              color: 'gray',
-            },
-          }}
-          value={password}
-          onChange={(e) => {
-            setError('');
-            setPassword(e.target.value);
-          }}
-        />
         <div className="py-4 w-full text-center">
           <Button
             variant="contained"
