@@ -43,21 +43,9 @@ async function handleRefreshToken(req: NextRequest) {
       });
     }
 
-    // cookies().set('refreshToken', token.refreshToken, {
-    //   httpOnly: true,
-    //   secure: true,
-    //   expires: refreshExpiresAt,
-    //   sameSite: 'lax',
-    //   path: '/',
-    // });
-
-    return NextResponse.redirect(new URL('/menu', req.nextUrl));
+    return NextResponse.redirect(req.nextUrl);
+    // return NextResponse.redirect(new URL('/menu', req.nextUrl));
   } catch {
     await deleteSesssion();
-    // console.error('Error refreshing token:', error);
-    // return new Response(JSON.stringify({ message: 'Internal Server Error' }), {
-    //   status: 500,
-    //   headers: { 'Content-Type': 'application/json' },
-    // });
   }
 }

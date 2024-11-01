@@ -11,7 +11,7 @@ import {
   useMaterialReactTable,
 } from 'material-react-table';
 import { Box, IconButton, Tooltip, darken, lighten } from '@mui/material';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import {
   QueryClient,
@@ -32,22 +32,7 @@ import {
   //   updateUserById,
 } from './requests';
 import RegisterChannel from './RegisterChannel';
-
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#9a56e3',
-    },
-    secondary: {
-      main: '#f48fb1',
-    },
-    background: {
-      default: '#121212',
-      paper: '#1d1d1d',
-    },
-  },
-});
+import { darkTheme } from '../../UI/darkTheme';
 
 const ChannelsTableWithoutProvider = ({
   role,
@@ -498,25 +483,6 @@ function useGetChannels() {
 }
 
 //UPDATE hook (put user in api)
-// function useUpdateUser() {
-//   const queryClient = useQueryClient();
-//   return useMutation({
-//     mutationFn: async (user: Channel | any) => {
-//       await updateChannelById(user.id, user);
-//       return Promise.resolve();
-//     },
-//     //client side optimistic update
-//     onMutate: (newUserInfo: any) => {
-//       queryClient.setQueryData(['channels'], (prevUsers: any) => {
-//         let user = findUserInTree(newUserInfo.id, prevUsers);
-//         user = { ...user, ...newUserInfo };
-//         return [...prevUsers];
-//       });
-//       return { newUserInfo }; // maybe fix
-//     },
-//     onSettled: () => queryClient.invalidateQueries({ queryKey: ['channels'] }), //refetch users after mutation, disabled for demo
-//   });
-// }
 function useUpdateUser() {
   const queryClient = useQueryClient();
   return useMutation({

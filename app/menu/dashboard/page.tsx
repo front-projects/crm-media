@@ -1,6 +1,5 @@
-'use client';
-import Example from '@/app/components/TestFunc';
+import { redirect } from 'next/navigation';
 
 export default function DashboardPage() {
-  return <Example />;
+  redirect('/menu/dashboard/dashboards');
 }

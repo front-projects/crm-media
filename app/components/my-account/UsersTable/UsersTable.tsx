@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   MaterialReactTable,
   type MRT_ColumnDef,
@@ -9,7 +9,7 @@ import {
   useMaterialReactTable,
 } from 'material-react-table';
 import { Box, IconButton, Tooltip, darken, lighten } from '@mui/material';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import {
   QueryClient,
@@ -30,27 +30,16 @@ import {
 import RegisterUser from '../RegisterUser';
 import { useSearchParams } from 'next/navigation';
 import { MenuItem } from '@mui/material';
-
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#9a56e3',
-    },
-    secondary: {
-      main: '#f48fb1',
-    },
-    background: {
-      default: '#121212',
-      paper: '#1d1d1d',
-    },
-  },
-});
+import { darkTheme } from '../../UI/darkTheme';
 
 const UsersTableWithoutProvider = () => {
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string | undefined>
   >({});
+
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: ['users'] });
+  }, []);
 
   const columns = useMemo<MRT_ColumnDef<User>[]>(
     () => [

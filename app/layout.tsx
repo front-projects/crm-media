@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
+import 'rsuite/dist/rsuite-no-reset.min.css';
 import './globals.css';
 
 const geistSans = localFont({
